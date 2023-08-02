@@ -7,21 +7,25 @@
       <span class="title-total">Total</span>
     </div>
     <ul class="sell-list">
-      <li v-for="ask in updateAsksList" class="ask">
+      <li
+        v-for="ask in updateAsksList"
+        class="ask"
+        :class="{ 'size-decrease': ask[2] === 'new' }"
+      >
         <span class="ask-price">
           {{ formatNumber(ask[0], 1) }}
         </span>
-        <span class="ask-size">
+        <span class="ask-size" :class="`size-${ask[2]}`">
           {{ formatNumber(ask[1]) }}
         </span>
         <div class="ask-total">
           <span
             class="accumulative-bar"
             :style="{
-              left: calcAccumulativeBar(ask[2], updateAsksList[0][2]),
+              left: calcAccumulativeBar(ask[3], updateAsksList[0][3]),
             }"
           />
-          {{ formatNumber(ask[2]) }}
+          {{ formatNumber(ask[3]) }}
         </div>
       </li>
     </ul>
@@ -32,21 +36,25 @@
       </div>
     </div>
     <ul class="buy-list">
-      <li v-for="bid in updateBidsList" class="bid">
+      <li
+        v-for="bid in updateBidsList"
+        class="bid"
+        :class="{ 'size-increase': bid[2] === 'new' }"
+      >
         <span class="bid-price">
           {{ formatNumber(bid[0], 1) }}
         </span>
-        <span class="bid-size">
+        <span class="bid-size" :class="`size-${bid[2]}`">
           {{ formatNumber(bid[1]) }}
         </span>
         <div class="bid-total">
           <span
             class="accumulative-bar"
             :style="{
-              left: calcAccumulativeBar(bid[2], updateBidsList[7][2]),
+              left: calcAccumulativeBar(bid[3], updateBidsList[7][3]),
             }"
           />
-          {{ formatNumber(bid[2]) }}
+          {{ formatNumber(bid[3]) }}
         </div>
       </li>
     </ul>

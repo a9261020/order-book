@@ -1,31 +1,43 @@
 import { ref } from 'vue';
 import useWs from './useWs';
 const endpoint = 'wss://ws.btse.com/ws/oss/futures';
+import {
+  removePriceLevel,
+  addPriceLevel,
+  updatePriceLevel,
+  levelExists,
+} from '../utils/Utils';
 
 export const useUpdates = (market = '') => {
   const updateBids = ref([]);
   const updateAsks = ref([]);
   const currentBids = ref([]);
   const currentAsks = ref([]);
+  let localSeqNum = 0;
 
-  const openHandler = () => {
-    const subscribeMsg = {
-      op: 'subscribe',
+  const openHandler = (isInit = true) => {
+    const msg = {
+      op: isInit ? 'subscribe' : 'unsubscribe',
       args: [`update:${market}`],
     };
 
-    orderBookWs.send(JSON.stringify(subscribeMsg));
+    orderBookWs.send(JSON.stringify(msg));
   };
 
   const msgHandler = evt => {
     const res = JSON.parse(evt.data);
 
     if (res?.data) {
-      const { bids, asks, seqNum, prevSeqNum, type, symbol } = res.data;
+      const { bids, asks, seqNum, prevSeqNum, type } = res.data;
+
+      if (localSeqNum !== 0 && localSeqNum !== prevSeqNum) {
+        openHandler(false);
+        openHandler();
+      }
 
       if (type === 'snapshot') {
-        const initAsks = asks.slice(42);
-        const initBids = bids.slice(0, 8);
+        const initAsks = asks.slice(-8).map(item => [...item, 'new']);
+        const initBids = bids.slice(0, 8).map(item => [...item, 'new']);
         updateAsks.value = initAsks;
         updateBids.value = initBids;
       } else {
@@ -43,28 +55,9 @@ export const useUpdates = (market = '') => {
           currentBids.value = [];
         }
       }
+
+      localSeqNum = seqNum;
     }
-  };
-
-  const removePriceLevel = (price, items) => {
-    return items.filter(item => item[0] !== price);
-  };
-
-  const levelExists = (price, currentLevels) => {
-    return currentLevels.some(level => level[0] === price);
-  };
-
-  const updatePriceLevel = (bid, levels) => {
-    return levels.map(level => {
-      if (level[0] === bid[0]) {
-        level = bid;
-      }
-      return level;
-    });
-  };
-
-  const addPriceLevel = (deltaLevel, levels) => {
-    return [...levels, deltaLevel];
   };
 
   const updateBidsHandler = newUpdateBids => {

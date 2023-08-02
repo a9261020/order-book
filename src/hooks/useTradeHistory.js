@@ -27,7 +27,6 @@ export const useTradeHistory = (market = '') => {
 
     if (res?.data) {
       const [lastPrice] = res.data;
-      console.log('lastPrice ->', lastPrice);
 
       if (currentLastPrice.value.value === '0') {
         currentLastPrice.value.trend = TREND.SAME;

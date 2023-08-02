@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  box-sizing: border-box;
 }
 
 body {
@@ -32,6 +33,7 @@ body {
 .title {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
   padding: 12px;
   color: #8698aa;
 }
@@ -53,6 +55,7 @@ body {
 .sell-list .ask {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .buy-list .bid-price {
@@ -132,4 +135,25 @@ li:hover {
 .last-price.same {
   color: #f0f4f8;
   background-color: rgba(134, 152, 170, 0.12);
+}
+
+.size-increase {
+  --flash-color: rgba(0, 177, 93, 0.5);
+
+  animation: flashBackground 1s;
+}
+
+.size-decrease {
+  --flash-color: rgba(255, 91, 90, 0.5);
+
+  animation: flashBackground 1s;
+}
+
+@keyframes flashBackground {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--flash-color);
+  }
 }
