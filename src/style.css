@@ -1,89 +1,116 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 body {
-  margin: 0;
   display: flex;
   place-items: center;
+  color: #f0f4f8;
+  background-color: #131b29;
   min-width: 320px;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
+.order-book {
+  font-size: 16px;
+  padding: 12px;
+  border-bottom: 1px solid #333;
 }
 
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.container {
+  width: 375px;
+  border: 1px solid #000;
+}
+
+.title {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 12px;
+  color: #8698aa;
+}
+
+.title-size {
+  text-align: right;
+}
+
+.title-total {
+  text-align: right;
+}
+
+.buy-list,
+.sell-list {
+  padding: 12px;
+}
+
+.buy-list .bid,
+.sell-list .ask {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.buy-list .bid-price {
+  color: #00b15d;
+}
+
+.sell-list .ask-price {
+  color: #ff5b5a;
+}
+
+.buy-list .bid-size,
+.buy-list .bid-total,
+.sell-list .ask-size,
+.sell-list .ask-total {
+  text-align: right;
+}
+
+.buy-list .bid-total,
+.sell-list .ask-total {
+  position: relative;
+}
+
+.accumulative-bar {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 0 0;
+}
+
+.sell-list .accumulative-bar {
+  background-color: rgba(255, 90, 90, 0.12);
+}
+
+.buy-list .accumulative-bar {
+  background-color: rgba(16, 186, 104, 0.12);
+}
+
+li:hover {
+  background-color: #1e3059;
+}
+
+.last-price {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.last-price.increase {
+  color: #00b15d;
+  background-color: rgba(16, 186, 104, 0.12);
+}
+
+.last-price.decrease {
+  color: #ff5b5a;
+  background-color: rgba(255, 90, 90, 0.12);
+}
+
+.last-price.same {
+  color: #f0f4f8;
+  background-color: rgba(134, 152, 170, 0.12);
 }
