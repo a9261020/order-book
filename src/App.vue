@@ -26,8 +26,10 @@
       </li>
     </ul>
     <div class="last-price" :class="currentLastPrice.trend">
-      {{ formatNumber(currentLastPrice.value.price) }}
-      <img src="/arrow.svg" alt="" />
+      {{ formatNumber(currentLastPrice.value.price, 1) }}
+      <div v-show="currentLastPrice.trend !== 'same'" class="icon">
+        <SvgIcon iconClass="arrow" />
+      </div>
     </div>
     <ul class="buy-list">
       <li v-for="bid in updateBidsList" class="bid">
@@ -55,8 +57,13 @@
 import { computed } from 'vue';
 import { useUpdates } from './hooks/useUpdates';
 import { useTradeHistory } from './hooks/useTradeHistory';
+import SvgIcon from './components/SvgIcon.vue';
 
 export default {
+  name: 'App',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const market = 'BTCPFC';
 
