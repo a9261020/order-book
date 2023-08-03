@@ -6,37 +6,14 @@
       <span class="title-size">Size</span>
       <span class="title-total">Total</span>
     </div>
-    <Levels v-if="rawAsks[0]" :levels="rawAsks" quote="0" />
+    <Levels v-if="isNotEmptyArray(rawAsks[0])" :levels="rawAsks" quote="0" />
     <div class="last-price" :class="currentLastPrice.trend">
       {{ formatNumber(currentLastPrice.value.price, 1) }}
       <div v-show="currentLastPrice.trend !== 'same'" class="icon">
         <SvgIcon iconClass="arrow" />
       </div>
     </div>
-    <Levels v-if="rawBids[0]" :levels="rawBids" quote="1" />
-    <!-- <ul class="buy-list">
-      <li
-        v-for="bid in bidsList"
-        class="bid"
-        :class="{ 'size-increase': bid[2] === 'new' }"
-      >
-        <span class="bid-price">
-          {{ formatNumber(bid[0], 1) }}
-        </span>
-        <span class="bid-size" :class="`size-${bid[2]}`">
-          {{ formatNumber(bid[1]) }}
-        </span>
-        <div class="bid-total">
-          <span
-            class="accumulative-bar"
-            :style="{
-              left: calcAccumulativeBar(bid[3], bidsList[7][3]),
-            }"
-          />
-          {{ formatNumber(bid[3]) }}
-        </div>
-      </li>
-    </ul> -->
+    <Levels v-if="isNotEmptyArray(rawBids[0])" :levels="rawBids" quote="1" />
   </div>
 </template>
 
@@ -57,10 +34,12 @@ export default {
     const market = 'BTCPFC';
     const { currentLastPrice } = useTradeHistory(market);
     const { rawAsks, rawBids } = useUpdates(market);
+    const isNotEmptyArray = ary => Array.isArray(ary) && ary.length > 0;
 
     return {
       rawAsks,
       rawBids,
+      isNotEmptyArray,
       formatNumber,
       currentLastPrice,
     };

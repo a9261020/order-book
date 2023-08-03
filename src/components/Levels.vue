@@ -1,12 +1,6 @@
 <template>
   <ul :class="`${quoteType === 'ask' ? 'sell' : 'buy'}-list`">
-    <li
-      v-for="level in levelList"
-      :class="{
-        [quoteType]: true,
-        'size-decrease': level[2] === 'new',
-      }"
-    >
+    <li v-for="level in levelList" :class="[levelClass(level[2])]">
       <span :class="`${quoteType}-price`">
         {{ formatNumber(level[0], 1) }}
       </span>
@@ -17,10 +11,7 @@
         <span
           class="accumulative-bar"
           :style="{
-            left:
-              quoteType === 'ask'
-                ? calcAccumulativeBar(level[3], levelList[0][3])
-                : calcAccumulativeBar(level[3], levelList[7][3]),
+            left: calcAccumulativeBar(level[3], levelList),
           }"
         />
         {{ formatNumber(level[3]) }}
@@ -45,7 +36,17 @@ export default {
   },
   setup(props) {
     const quoteType = props.quote === '0' ? 'ask' : 'bid';
+    const levelClass = trend => {
+      let sizeTrend = '';
+      if (trend === 'new') {
+        sizeTrend = quoteType === 'ask' ? 'decrease' : 'increase';
+      }
 
+      return {
+        [quoteType]: true,
+        [`size-${sizeTrend}`]: true,
+      };
+    };
     const levelList = computed(() => {
       let cumulativeSum = 0;
       const sortedAndSlicedLevels = props.levels
@@ -67,11 +68,14 @@ export default {
           });
     });
 
-    const calcAccumulativeBar = (current, total) =>
-      `${100 - (+current / +total) * 100}%`;
+    const calcAccumulativeBar = (level, levelList) => {
+      const total = quoteType === 'ask' ? +levelList[0][3] : +levelList[7][3];
+      return `${100 - (+level / total) * 100}%`;
+    };
 
     return {
       quoteType,
+      levelClass,
       levelList,
       formatNumber,
       calcAccumulativeBar,
