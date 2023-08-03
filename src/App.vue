@@ -6,14 +6,22 @@
       <span class="title-size">Size</span>
       <span class="title-total">Total</span>
     </div>
-    <Levels v-if="isNotEmptyArray(rawAsks[0])" :levels="rawAsks" quote="0" />
+    <Levels
+      v-if="isNotEmptyArray(rawAsks[0])"
+      :levels="rawAsks"
+      quoteType="ask"
+    />
     <div class="last-price" :class="currentLastPrice.trend">
       {{ formatNumber(currentLastPrice.value.price, 1) }}
       <div v-show="currentLastPrice.trend !== 'same'" class="icon">
         <SvgIcon iconClass="arrow" />
       </div>
     </div>
-    <Levels v-if="isNotEmptyArray(rawBids[0])" :levels="rawBids" quote="1" />
+    <Levels
+      v-if="isNotEmptyArray(rawBids[0])"
+      :levels="rawBids"
+      quoteType="bid"
+    />
   </div>
 </template>
 

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, toRefs } from 'vue';
 import { formatNumber } from '../utils/Utils';
 
 export default {
@@ -30,30 +30,30 @@ export default {
     levels: {
       type: Array,
     },
-    quote: {
+    quoteType: {
       type: String,
     },
   },
   setup(props) {
-    const quoteType = props.quote === '0' ? 'ask' : 'bid';
+    const { levels, quoteType } = toRefs(props);
     const levelClass = trend => {
       let sizeTrend = '';
       if (trend === 'new') {
-        sizeTrend = quoteType === 'ask' ? 'decrease' : 'increase';
+        sizeTrend = quoteType.value === 'ask' ? 'decrease' : 'increase';
       }
 
       return {
-        [quoteType]: true,
+        [quoteType.value]: true,
         [`size-${sizeTrend}`]: true,
       };
     };
     const levelList = computed(() => {
       let cumulativeSum = 0;
-      const sortedAndSlicedLevels = props.levels
+      const sortedAndSlicedLevels = levels.value
         .sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]))
         .slice(0, 8);
 
-      return props.quote === '0'
+      return quoteType.value === 'ask'
         ? sortedAndSlicedLevels.map((entry, index, arr) => {
             const accumulatedValue = arr
               .slice(index)
@@ -69,12 +69,12 @@ export default {
     });
 
     const calcAccumulativeBar = (level, levelList) => {
-      const total = quoteType === 'ask' ? +levelList[0][3] : +levelList[7][3];
+      const total =
+        quoteType.value === 'ask' ? +levelList[0][3] : +levelList[7][3];
       return `${100 - (+level / total) * 100}%`;
     };
 
     return {
-      quoteType,
       levelClass,
       levelList,
       formatNumber,
