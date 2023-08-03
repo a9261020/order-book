@@ -8,7 +8,7 @@
     </div>
     <ul class="sell-list">
       <li
-        v-for="ask in updateAsksList"
+        v-for="ask in asksList"
         class="ask"
         :class="{ 'size-decrease': ask[2] === 'new' }"
       >
@@ -22,7 +22,7 @@
           <span
             class="accumulative-bar"
             :style="{
-              left: calcAccumulativeBar(ask[3], updateAsksList[0][3]),
+              left: calcAccumulativeBar(ask[3], asksList[0][3]),
             }"
           />
           {{ formatNumber(ask[3]) }}
@@ -37,7 +37,7 @@
     </div>
     <ul class="buy-list">
       <li
-        v-for="bid in updateBidsList"
+        v-for="bid in bidsList"
         class="bid"
         :class="{ 'size-increase': bid[2] === 'new' }"
       >
@@ -51,7 +51,7 @@
           <span
             class="accumulative-bar"
             :style="{
-              left: calcAccumulativeBar(bid[3], updateBidsList[7][3]),
+              left: calcAccumulativeBar(bid[3], bidsList[7][3]),
             }"
           />
           {{ formatNumber(bid[3]) }}
@@ -66,17 +66,19 @@ import { computed } from 'vue';
 import { useUpdates } from './hooks/useUpdates';
 import { useTradeHistory } from './hooks/useTradeHistory';
 import SvgIcon from './components/SvgIcon.vue';
+import Levels from './components/Levels.vue';
 
 export default {
   name: 'App',
   components: {
     SvgIcon,
+    Levels,
   },
   setup() {
     const market = 'BTCPFC';
 
     const { currentLastPrice } = useTradeHistory(market);
-    const { updateAsks, updateBids } = useUpdates(market);
+    const { rawAsks, rawBids } = useUpdates(market);
     const formatNumber = (value, minimumFractionDigits = 0) => {
       const numberValue = +value;
       return numberValue.toLocaleString('en-US', {
@@ -85,8 +87,8 @@ export default {
     };
     const calcAccumulativeBar = (current, total) =>
       `${100 - (+current / +total) * 100}%`;
-    const updateAsksList = computed(() => {
-      return updateAsks.value
+    const asksList = computed(() => {
+      return rawAsks.value
         .sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]))
         .slice(0, 8)
         .map((entry, index, arr) => {
@@ -97,10 +99,10 @@ export default {
           return [...entry, accumulatedValue];
         });
     });
-    const updateBidsList = computed(() => {
+    const bidsList = computed(() => {
       let cumulativeSum = 0;
 
-      return updateBids.value
+      return rawBids.value
         .sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]))
         .slice(0, 8)
         .map(item => {
@@ -111,8 +113,8 @@ export default {
     });
 
     return {
-      updateAsksList,
-      updateBidsList,
+      asksList,
+      bidsList,
       formatNumber,
       calcAccumulativeBar,
       currentLastPrice,

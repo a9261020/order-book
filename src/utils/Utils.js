@@ -1,9 +1,9 @@
-export const removePriceLevel = (price, items) => {
-  return items.filter(item => item[0] !== price);
+export const removePriceLevel = (price, levels) => {
+  return levels.filter(level => level[0] !== price);
 };
 
-export const levelExists = (price, currentLevels) => {
-  return currentLevels.some(level => level[0] === price);
+export const levelExists = (price, levels) => {
+  return levels.some(level => level[0] === price);
 };
 
 export const updatePriceLevel = (bid, levels) => {

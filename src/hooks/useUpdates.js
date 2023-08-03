@@ -9,10 +9,10 @@ import {
 } from '../utils/Utils';
 
 export const useUpdates = (market = '') => {
-  const updateBids = ref([]);
-  const updateAsks = ref([]);
-  const currentBids = ref([]);
-  const currentAsks = ref([]);
+  const rawBids = ref([]);
+  const rawAsks = ref([]);
+  let currentBids = [];
+  let currentAsks = [];
   let localSeqNum = 0;
 
   const openHandler = (isInit = true) => {
@@ -38,21 +38,21 @@ export const useUpdates = (market = '') => {
       if (type === 'snapshot') {
         const initAsks = asks.slice(-8).map(item => [...item, 'new']);
         const initBids = bids.slice(0, 8).map(item => [...item, 'new']);
-        updateAsks.value = initAsks;
-        updateBids.value = initBids;
+        rawAsks.value = initAsks;
+        rawBids.value = initBids;
       } else {
         if (asks.length > 0) {
-          currentAsks.value = [...updateAsks.value, ...asks];
+          currentAsks = [...rawAsks.value, ...asks];
 
-          updateAsksHandler(currentAsks.value);
-          currentAsks.value = [];
+          updateAsksHandler(currentAsks);
+          currentAsks = [];
         }
 
         if (bids.length > 0) {
-          currentBids.value = [...updateBids.value, ...bids];
+          currentBids = [...rawBids.value, ...bids];
 
-          updateBidsHandler(currentBids.value);
-          currentBids.value = [];
+          updateBidsHandler(currentBids);
+          currentBids = [];
         }
       }
 
@@ -66,14 +66,14 @@ export const useUpdates = (market = '') => {
 
       // If new size is zero - delete the price level
       if (size === '0') {
-        updateBids.value = removePriceLevel(price, updateBids.value);
+        rawBids.value = removePriceLevel(price, rawBids.value);
       } else {
         // If the price level exists and the size is not zero, update it
-        if (levelExists(price, updateBids.value)) {
-          updateBids.value = updatePriceLevel(bid, updateBids.value);
+        if (levelExists(price, rawBids.value)) {
+          rawBids.value = updatePriceLevel(bid, rawBids.value);
         } else {
           // If the price level doesn't exist in the orderbook and there are less than 25 levels, add it
-          updateBids.value = addPriceLevel(bid, updateBids.value);
+          rawBids.value = addPriceLevel(bid, rawBids.value);
         }
       }
     });
@@ -85,14 +85,14 @@ export const useUpdates = (market = '') => {
 
       // If new size is zero - delete the price level
       if (size === '0') {
-        updateAsks.value = removePriceLevel(price, updateAsks.value);
+        rawAsks.value = removePriceLevel(price, rawAsks.value);
       } else {
         // If the price level exists and the size is not zero, update it
-        if (levelExists(price, updateAsks.value)) {
-          updateAsks.value = updatePriceLevel(bid, updateAsks.value);
+        if (levelExists(price, rawAsks.value)) {
+          rawAsks.value = updatePriceLevel(bid, rawAsks.value);
         } else {
           // If the price level doesn't exist in the orderbook and there are less than 25 levels, add it
-          updateAsks.value = addPriceLevel(bid, updateAsks.value);
+          rawAsks.value = addPriceLevel(bid, rawAsks.value);
         }
       }
     });
@@ -104,7 +104,7 @@ export const useUpdates = (market = '') => {
   });
 
   return {
-    updateBids,
-    updateAsks,
+    rawBids,
+    rawAsks,
   };
 };
