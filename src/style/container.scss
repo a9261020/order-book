@@ -1,0 +1,17 @@
+.container {
+  width: 375px;
+  border: 1px solid #000;
+}
+
+.title {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 12px 12px 0;
+  color: #8698aa;
+
+  &-size,
+  &-total {
+    text-align: right;
+  }
+}

@@ -1,13 +1,17 @@
 <template>
-  <ul :class="`${quoteType === 'ask' ? 'sell' : 'buy'}-list`">
-    <li v-for="level in levelList" :class="[levelClass(level[2])]">
-      <span :class="`${quoteType}-price`">
+  <ul :class="`list ${quoteType}`">
+    <li
+      v-for="level in levelList"
+      class="level"
+      :class="[levelClass(level[2])]"
+    >
+      <span class="price">
         {{ formatNumber(level[0], 1) }}
       </span>
-      <span :class="`${quoteType}-size size-${level[2]}`">
+      <span class="size" :class="`size-${level[2]}`">
         {{ formatNumber(level[1]) }}
       </span>
-      <div :class="`${quoteType}-total`">
+      <div class="total">
         <span
           class="accumulative-bar"
           :style="{
@@ -43,7 +47,6 @@ export default {
       }
 
       return {
-        [quoteType.value]: true,
         [`size-${sizeTrend}`]: true,
       };
     };
