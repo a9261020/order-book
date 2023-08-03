@@ -32,3 +32,5 @@ export const formatNumber = (value, minimumFractionDigits = 0) => {
     minimumFractionDigits,
   });
 };
+
+export const isNotEmptyArray = ary => Array.isArray(ary) && ary.length > 0;

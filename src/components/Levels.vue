@@ -3,7 +3,7 @@
     <li
       v-for="level in levelList"
       class="level"
-      :class="[levelClass(level[2])]"
+      :class="`${levelClass(level[2])}`"
     >
       <span class="price">
         {{ formatNumber(level[0], 1) }}
@@ -27,6 +27,7 @@
 <script>
 import { computed, toRefs } from 'vue';
 import { formatNumber } from '../utils/Utils';
+import { TREND_MAP } from '../constant/constant';
 
 export default {
   name: 'Levels',
@@ -43,12 +44,10 @@ export default {
     const levelClass = trend => {
       let sizeTrend = '';
       if (trend === 'new') {
-        sizeTrend = quoteType.value === 'ask' ? 'decrease' : 'increase';
+        sizeTrend = TREND_MAP[quoteType.value];
       }
 
-      return {
-        [`size-${sizeTrend}`]: true,
-      };
+      return `size-${sizeTrend}`;
     };
     const levelList = computed(() => {
       let cumulativeSum = 0;

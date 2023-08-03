@@ -1,15 +1,11 @@
 import { ref } from 'vue';
 import useWs from './useWs';
 const endpoint = 'wss://ws.btse.com/ws/futures';
-const TREND = {
-  INCREASE: 'increase',
-  DECREASE: 'decrease',
-  SAME: 'same',
-};
+import { HISTORY_TREND_MAP } from '../constant/constant';
 
 export const useTradeHistory = (market = '') => {
   const currentLastPrice = ref({
-    value: '0',
+    price: '0',
     trend: '',
   });
 
@@ -28,21 +24,21 @@ export const useTradeHistory = (market = '') => {
     if (res?.data) {
       const [lastPrice] = res.data;
 
-      if (currentLastPrice.value.value === '0') {
-        currentLastPrice.value.trend = TREND.SAME;
-        currentLastPrice.value.value = lastPrice;
+      if (currentLastPrice.value.price === '0') {
+        currentLastPrice.value.trend = HISTORY_TREND_MAP.SAME;
+        currentLastPrice.value.price = lastPrice.price;
         return;
       }
 
-      if (currentLastPrice.value.value.price > lastPrice.price) {
-        currentLastPrice.value.trend = TREND.DECREASE;
-      } else if (currentLastPrice.value.value.price < lastPrice.price) {
-        currentLastPrice.value.trend = TREND.INCREASE;
+      if (currentLastPrice.value.price > lastPrice.price) {
+        currentLastPrice.value.trend = HISTORY_TREND_MAP.DECREASE;
+      } else if (currentLastPrice.value.price < lastPrice.price) {
+        currentLastPrice.value.trend = HISTORY_TREND_MAP.INCREASE;
       } else {
-        currentLastPrice.value.trend = TREND.SAME;
+        currentLastPrice.value.trend = HISTORY_TREND_MAP.SAME;
       }
 
-      currentLastPrice.value.value = lastPrice;
+      currentLastPrice.value.price = lastPrice.price;
     }
   };
 

@@ -12,7 +12,7 @@
       quoteType="ask"
     />
     <div class="last-price" :class="currentLastPrice.trend">
-      {{ formatNumber(currentLastPrice.value.price, 1) }}
+      {{ formatNumber(currentLastPrice.price, 1) }}
       <div v-show="currentLastPrice.trend !== 'same'" class="icon">
         <SvgIcon iconClass="arrow" />
       </div>
@@ -28,7 +28,8 @@
 <script>
 import { useUpdates } from './hooks/useUpdates';
 import { useTradeHistory } from './hooks/useTradeHistory';
-import { formatNumber } from './utils/Utils';
+import { formatNumber, isNotEmptyArray } from './utils/Utils';
+import { MARKET } from './constant/constant';
 import SvgIcon from './components/SvgIcon.vue';
 import Levels from './components/Levels.vue';
 
@@ -39,10 +40,8 @@ export default {
     Levels,
   },
   setup() {
-    const market = 'BTCPFC';
-    const { currentLastPrice } = useTradeHistory(market);
-    const { rawAsks, rawBids } = useUpdates(market);
-    const isNotEmptyArray = ary => Array.isArray(ary) && ary.length > 0;
+    const { currentLastPrice } = useTradeHistory(MARKET);
+    const { rawAsks, rawBids } = useUpdates(MARKET);
 
     return {
       rawAsks,
