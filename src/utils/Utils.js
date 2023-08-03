@@ -26,3 +26,9 @@ export const addPriceLevel = (deltaLevel, levels) => {
   const newDeltaLevel = [...deltaLevel, 'new'];
   return [...levels, newDeltaLevel];
 };
+
+export const formatNumber = (value, minimumFractionDigits = 0) => {
+  return (+value).toLocaleString('en-US', {
+    minimumFractionDigits,
+  });
+};

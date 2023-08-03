@@ -11,8 +11,6 @@ import {
 export const useUpdates = (market = '') => {
   const rawBids = ref([]);
   const rawAsks = ref([]);
-  let currentBids = [];
-  let currentAsks = [];
   let localSeqNum = 0;
 
   const openHandler = (isInit = true) => {
@@ -42,17 +40,11 @@ export const useUpdates = (market = '') => {
         rawBids.value = initBids;
       } else {
         if (asks.length > 0) {
-          currentAsks = [...rawAsks.value, ...asks];
-
-          updateAsksHandler(currentAsks);
-          currentAsks = [];
+          updateHandler([...rawAsks.value, ...asks], rawAsks);
         }
 
         if (bids.length > 0) {
-          currentBids = [...rawBids.value, ...bids];
-
-          updateBidsHandler(currentBids);
-          currentBids = [];
+          updateHandler([...rawBids.value, ...bids], rawBids);
         }
       }
 
@@ -60,39 +52,20 @@ export const useUpdates = (market = '') => {
     }
   };
 
-  const updateBidsHandler = newUpdateBids => {
-    newUpdateBids.forEach(bid => {
-      const [price, size] = bid;
+  const updateHandler = (currentLevels, prevLevels) => {
+    currentLevels.forEach(level => {
+      const [price, size] = level;
 
       // If new size is zero - delete the price level
       if (size === '0') {
-        rawBids.value = removePriceLevel(price, rawBids.value);
+        prevLevels.value = removePriceLevel(price, prevLevels.value);
       } else {
         // If the price level exists and the size is not zero, update it
-        if (levelExists(price, rawBids.value)) {
-          rawBids.value = updatePriceLevel(bid, rawBids.value);
+        if (levelExists(price, prevLevels.value)) {
+          prevLevels.value = updatePriceLevel(level, prevLevels.value);
         } else {
           // If the price level doesn't exist in the orderbook and there are less than 25 levels, add it
-          rawBids.value = addPriceLevel(bid, rawBids.value);
-        }
-      }
-    });
-  };
-
-  const updateAsksHandler = newUpdateAsks => {
-    newUpdateAsks.forEach(bid => {
-      const [price, size] = bid;
-
-      // If new size is zero - delete the price level
-      if (size === '0') {
-        rawAsks.value = removePriceLevel(price, rawAsks.value);
-      } else {
-        // If the price level exists and the size is not zero, update it
-        if (levelExists(price, rawAsks.value)) {
-          rawAsks.value = updatePriceLevel(bid, rawAsks.value);
-        } else {
-          // If the price level doesn't exist in the orderbook and there are less than 25 levels, add it
-          rawAsks.value = addPriceLevel(bid, rawAsks.value);
+          prevLevels.value = addPriceLevel(level, prevLevels.value);
         }
       }
     });
